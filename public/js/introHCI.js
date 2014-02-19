@@ -40,6 +40,14 @@ function initializePage() {
 				'<div class="project-summary">'+project_json['summary']+'</div>'+
 				'<button class="project-delete btn btn-default" '+
 					'type="button">delete</button>';
+			new_html += '<table class="table table-striped">';
+			for(var i = 0; i < project_json['comments'].length; i++) {
+				new_html += '<tr><td>';
+				new_html += 'Comment ' + (i+1) + ': ' + project_json['comments'][i].text + '<br />';
+				new_html += '</td></tr>';
+			}
+			new_html += '</table>';
+			new_html += '<form class="comment_form" action="' + url_call + '/add_comment" method="post">ADD COMMENT: <input class="comment_input" type="text" name="comment" /><button class="comment_button" type="button">Submit Comment</button></form>';
 
 			// get the DIV to add content to
 			var details_div = $('#project' + idNumber + ' .details');
@@ -48,6 +56,20 @@ function initializePage() {
 
 			details_div.find('.project-delete').click(function(e) {
 				$.post('/project/'+idNumber+'/delete', function() {
+					window.location.href = '/';
+				});
+			});
+
+
+
+			details_div.find('.comment_button').click(function(e) {
+				var com = $(this).siblings('.comment_input').val();
+				// console.log($(this).siblings('.comment_input').val());
+				var comment = {
+					'comment': com
+				}
+				console.log(comment);
+				$.post('/project/'+idNumber+'/add_comment', comment, function() {
 					window.location.href = '/';
 				});
 			});
